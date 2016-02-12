@@ -6,7 +6,24 @@ from mptt.models import MPTTModel, TreeForeignKey
 from people.models import Discoverer
 
 
-class Material(MPTTModel):
+class BaseTree(MPTTModel):
+
+    class MPTTMeta:
+        order_insertion_by = ('name',)
+
+    class Meta:
+        abstract = True
+
+    def __str__(self):
+        names = (
+            self
+            .get_ancestors(include_self=True)
+            .values_list('name', flat=True)
+        )
+        return ' > '.join(names)
+
+
+class Material(BaseTree):
 
     name = models.CharField(
         max_length=128,
@@ -23,14 +40,8 @@ class Material(MPTTModel):
         verbose_name=_('parent'),
     )
 
-    class MPTTMeta:
-        order_insertion_by = ['name']
 
-    def __str__(self):
-        return self.name
-
-
-class Decoration(models.Model):
+class Decoration(BaseTree):
 
     name = models.CharField(
         max_length=128,
@@ -46,12 +57,6 @@ class Decoration(models.Model):
         db_index=True,
         verbose_name=_('parent'),
     )
-
-    class MPTTMeta:
-        order_insertion_by = ['name']
-
-    def __str__(self):
-        return self.name
 
 
 class Color(models.Model):
@@ -88,7 +93,7 @@ class Artifact(models.Model):
         verbose_name=_('main material'),
     )
 
-    color = models.ManyToManyField(
+    colors = models.ManyToManyField(
         Color,
         blank=True,
         related_name='artifacts',
