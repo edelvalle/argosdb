@@ -119,3 +119,7 @@ class Artifact(models.Model):
 
     def __str__(self):
         return self.name
+
+    def get_colors(self):
+        return ', '.join(self.colors.values_list('name', flat=True))
+    get_colors.short_description = colors.verbose_name
