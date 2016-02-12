@@ -72,6 +72,14 @@ class Finding(models.Model):
     place = models.CharField(max_length=128, db_index=True)
     discoverers = models.ManyToManyField(Discoverer, related_name='findings')
 
+    def __str__(self):
+        from django.utils.translation import ugettext as _
+        return _('{discoverers} at {place} on {date}').format(
+            discoverers=', '.join(map(str, self.discoverers.all())),
+            place=self.place,
+            date=self.date,
+        )
+
 
 class Artifact(models.Model):
 
