@@ -117,9 +117,15 @@ class Artifact(models.Model):
 
     found = models.ForeignKey(Finding, verbose_name=_('found by'))
 
+    found_date = models.DateTimeField(db_index=True, null=True)
+
     def __str__(self):
         return self.name
 
     def get_colors(self):
         return ', '.join(self.colors.values_list('name', flat=True))
     get_colors.short_description = colors.verbose_name
+
+    def save(self, *args, **kwargs):
+        self.found_date = self.found.date
+        return super().save(*args, **kwargs)
