@@ -115,7 +115,7 @@ class Artifact(models.Model):
         verbose_name=_('decorations'),
     )
 
-    found = models.ForeignKey(Finding)
+    found = models.ForeignKey(Finding, verbose_name=_('found by'))
 
     def __str__(self):
         return self.name
