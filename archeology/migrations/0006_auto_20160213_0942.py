@@ -14,11 +14,6 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.AlterField(
-            model_name='artifact',
-            name='found',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, to='archeology.Finding', verbose_name='found by'),
-        ),
-        migrations.AlterField(
             model_name='finding',
             name='date',
             field=models.DateField(blank=True, db_index=True, null=True, verbose_name='date'),

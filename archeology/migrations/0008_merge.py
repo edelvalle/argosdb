@@ -9,7 +9,7 @@ class Migration(migrations.Migration):
 
     dependencies = [
         ('archeology', '0007_auto_20160213_0942'),
-        ('archeology', '0006_auto_20160213_1037'),
+        ('archeology', '0006_auto_20160213_0942'),
     ]
 
     operations = [
