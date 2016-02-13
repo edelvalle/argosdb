@@ -69,17 +69,33 @@ class Color(models.Model):
 
 
 class Finding(models.Model):
-    date = models.DateField(db_index=True, verbose_name=_('date'))
-    place = models.CharField(max_length=128, db_index=True)
-    discoverers = models.ManyToManyField(Discoverer, related_name='findings')
+    date = models.DateField(
+        null=True, blank=True,
+        db_index=True,
+        verbose_name=_('date')
+    )
+    place = models.CharField(
+        null=True, blank=True,
+        db_index=True,
+        max_length=128,
+    )
+    discoverers = models.ManyToManyField(
+        Discoverer,
+        blank=True,
+        related_name='findings',
+    )
 
     def __str__(self):
         from django.utils.translation import ugettext as _
-        return _('{discoverers} at {place} on {date}').format(
-            discoverers=', '.join(map(str, self.discoverers.all())),
-            place=self.place,
-            date=self.date,
-        )
+        result = []
+        if self.discoverers.exists():
+            discoverers = ', '.join(map(str, self.discoverers.all()))
+            result.append(_('by %s') % discoverers)
+        if self.place:
+            result.append(_('at %s') % self.place)
+        if self.date:
+            result.append(_('on %s') % self.date)
+        return ' '.join(result)
 
 
 class Artifact(models.Model):
@@ -116,7 +132,11 @@ class Artifact(models.Model):
         verbose_name=_('decorations'),
     )
 
-    found = models.ForeignKey(Finding, verbose_name=_('found'))
+    found = models.ForeignKey(
+        Finding,
+        null=True, blank=True,
+        verbose_name=_('found')
+    )
 
     found_date = models.DateTimeField(db_index=True, null=True)
 
@@ -128,7 +148,7 @@ class Artifact(models.Model):
     get_colors.short_description = colors.verbose_name
 
     def save(self, *args, **kwargs):
-        self.found_date = self.found.date
+        self.found_date = self.found and self.found.date
         return super().save(*args, **kwargs)
 
 
