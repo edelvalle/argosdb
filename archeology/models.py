@@ -116,7 +116,7 @@ class Artifact(models.Model):
         verbose_name=_('decorations'),
     )
 
-    found = models.ForeignKey(Finding, verbose_name=_('found by'))
+    found = models.ForeignKey(Finding, verbose_name=_('found'))
 
     found_date = models.DateTimeField(db_index=True, null=True)
 
