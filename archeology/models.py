@@ -1,5 +1,6 @@
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
+from django.utils.html import format_html
 
 from mptt.models import MPTTModel, TreeForeignKey
 
@@ -95,12 +96,6 @@ class Artifact(models.Model):
         verbose_name=_('description'),
     )
 
-    image = models.ImageField(
-        blank=True, null=True,
-        verbose_name=_('image'),
-        upload_to='artifacts/',
-    )
-
     main_material = models.ForeignKey(
         Material,
         related_name='artifacts',
@@ -135,3 +130,17 @@ class Artifact(models.Model):
     def save(self, *args, **kwargs):
         self.found_date = self.found.date
         return super().save(*args, **kwargs)
+
+
+class Image(models.Model):
+    artifact = models.ForeignKey(Artifact)
+
+    image = models.ImageField(
+        verbose_name=_('image'),
+        upload_to='artifacts/',
+    )
+
+    def admin_image(self):
+        return format_html('<img src="{url}" width=250  />', url=self.image.url)
+    admin_image.short_description = image.verbose_name
+    admin_image.allow_tags = True
