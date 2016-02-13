@@ -90,7 +90,7 @@ class Finding(models.Model):
         result = []
         if self.discoverers.exists():
             discoverers = ', '.join(map(str, self.discoverers.all()))
-            result.append(_('by %s') % + discoverers)
+            result.append(_('by %s') % discoverers)
         if self.place:
             result.append(_('at %s') % self.place)
         if self.date:
@@ -148,7 +148,7 @@ class Artifact(models.Model):
     get_colors.short_description = colors.verbose_name
 
     def save(self, *args, **kwargs):
-        self.found_date = self.found.date
+        self.found_date = self.found and self.found.date
         return super().save(*args, **kwargs)
 
 
