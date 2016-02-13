@@ -95,6 +95,12 @@ class Artifact(models.Model):
         verbose_name=_('description'),
     )
 
+    image = models.ImageField(
+        blank=True, null=True,
+        verbose_name=_('image'),
+        upload_to='artifacts/',
+    )
+
     main_material = models.ForeignKey(
         Material,
         related_name='artifacts',
